@@ -11,8 +11,9 @@ module DecisionTree
 
     # it would be great if Ruby hashes had #reduce
     e = 0
+
     output_counts.each do |o, c|
-      p = c / amap.count
+      p = c.to_f / amap.count
       e += -p * Math.log2(p)
     end
 

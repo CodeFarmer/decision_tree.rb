@@ -102,7 +102,7 @@ describe DecisionTree do
       @sample_data = [ 
         [{:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Weak'},   'No'],
         [{:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'}, 'No'],
-        [{:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'}, 'Yes'],
+        [{:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'High',   :wind => 'Weak'},   'Yes'],
         [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'},   'Yes'],
         [{:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
         [{:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'}, 'No'],
@@ -122,7 +122,6 @@ describe DecisionTree do
 
       # NOTE that the gain calculations in the textbook are floored, not rounded!
       it 'should return 0.247 for :outlook' do
-        debugger
         DecisionTree.gain(:outlook, @sample_data).should be_within(0.0005).of 0.247
       end
 

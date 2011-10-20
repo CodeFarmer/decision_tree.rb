@@ -1,19 +1,19 @@
 module DecisionTree
 
-  # amap: map of (input, output)
+  # pairs: list of [input, output]
   # return: the entropy with regard to (output) of the current list
-  def self.entropy(amap)
+  def self.entropy(pairs)
     output_counts = {}
-    amap.each do |i, o|
-      output_counts[o] ||= 0
-      output_counts[o] += 1
+    pairs.each do |pair|
+      output_counts[pair[1]] ||= 0
+      output_counts[pair[1]] += 1
     end
 
     # it would be great if Ruby hashes had #reduce
     e = 0
 
     output_counts.each do |o, c|
-      p = c.to_f / amap.count
+      p = c.to_f / pairs.count
       e += -p * Math.log2(p)
     end
 
@@ -24,24 +24,25 @@ module DecisionTree
   # amap: map of (input, output) where input is also a map
   # key:  a particular key from the input maps to use to partition the map
   #
-  # return a new map, whose keys are the various values that 'key' takes in input, and whose values are the segments of map where input is equal that value (but with 'key' removed). This can include the nil key.
+  # return a map, whose keys are the various values that 'key' takes in the maps that make up the first elements of each pair, and whose values are the segments of pairs where input is equal that value (but with 'key' removed). This can include the nil key.
   #
   # Hmm. Makes sense when you say it out lout.
-  def self.partition(key, amap)
+  def self.partition(key, pairs)
 
     ret = {}
 
-    amap.each do |i, o|
+    pairs.each do |pair|
 
-      part_without_key_in_keys = {}
+      part_without_key_in_keys = [] 
 
-      amap.select do |k, v|
-        k[key] == i[key]
-      end.each do |k, v|
-        part_without_key_in_keys[k.select{|l, w| l != key}] = v
+      pairs.select do |p|
+        p[0][key] == pair[0][key]
+      end.each do |p|
+        first_without_key_in_keys = p[0].select{|l, w| l != key}
+        part_without_key_in_keys << [first_without_key_in_keys, p[1]]
       end
 
-      ret[i[key]] = part_without_key_in_keys
+      ret[pair[0][key]] = part_without_key_in_keys
 
     end
 
@@ -57,15 +58,15 @@ module DecisionTree
 
   # amap: as with .partition, a map of (input, output) whose inputs are also maps
   # return: the key which, when used to partition amap, produces the creates net information gain (across all the partitions) compared to amap
-  def self.most_informative_key(amap)
+  def self.most_informative_key(pairs)
 
     winner = nil
     winning_gain = nil
 
-    current_entropy = entropy(amap)
+    current_entropy = entropy(pairs)
 
-    all_keys(amap.keys).each do |key|
-      g = gain(key, amap, current_entropy)
+    all_keys(pairs.map(&:first)).each do |key|
+      g = gain(key, pairs, current_entropy)
       if winner.nil? || g > winning_gain then
         winner = key
         winning_gain = g
@@ -77,9 +78,9 @@ module DecisionTree
 
   end
 
-  def self.gain(key, amap, current_entropy=nil)
-    current_entropy = entropy(amap) if current_entropy.nil?
-    return current_entropy - partition(key, amap).reduce(0) {|a, v| a + entropy(v)}
+  def self.gain(key, pairs, current_entropy=nil)
+    current_entropy = entropy(pairs) if current_entropy.nil?
+    return current_entropy - partition(key, pairs).values.reduce(0) {|a, v| a + entropy(v)}
   end
 
 end

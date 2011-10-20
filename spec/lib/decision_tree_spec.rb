@@ -10,22 +10,22 @@ describe DecisionTree do
 
     it 'should return 0.940 for the example in the Mitchell book' do
 
-      nine_five = {
-        1 =>  'Y',
-        2 =>  'Y',
-        3 =>  'Y',
-        4 =>  'Y',
-        5 =>  'Y',
-        6 =>  'Y',
-        7 =>  'Y',
-        8 =>  'Y',
-        9 =>  'Y',
-        10 => 'N',
-        11 => 'N',
-        12 => 'N',
-        13 => 'N',
-        14 => 'N',
-      }
+      nine_five = [ 
+        [1,  'Y'],
+        [2,  'Y'],
+        [3,  'Y'],
+        [4,  'Y'],
+        [5,  'Y'],
+        [6,  'Y'],
+        [7,  'Y'],
+        [8,  'Y'],
+        [9,  'Y'],
+        [10, 'N'],
+        [11, 'N'],
+        [12, 'N'],
+        [13, 'N'],
+        [14, 'N'],
+      ]
 
       DecisionTree.entropy(nine_five).should be_within(0.0005).of(0.940)
 
@@ -37,31 +37,31 @@ describe DecisionTree do
 
     it 'should deal with the simple case of inputs that have matching keys' do
 
-      amap = {
-        {:a => 1, :b => 1} => 'A',
-        {:a => 2, :b => 1} => 'B',
-        {:a => 2, :b => 2} => 'C'
-      }
+      pairs = [
+        [{:a => 1, :b => 1}, 'A'],
+        [{:a => 2, :b => 1}, 'B'],
+        [{:a => 2, :b => 2}, 'C'],
+      ]
 
-      DecisionTree.partition(:a, amap).should == {
-        1 => {{:b => 1} => 'A'},
-        2 => {{:b => 1} => 'B', {:b => 2} => 'C'}
+      DecisionTree.partition(:a, pairs).should == {
+        1 => [[{:b => 1}, 'A']],
+        2 => [[{:b => 1}, 'B'], [{:b => 2}, 'C']]
       }
 
     end
 
     it 'should deal with inputs that have differing keys' do
-      amap = {
-        {:a => 1, :b => 1} => 'A',
-        {:a => 2, :b => 1} => 'B',
-        {:c => 2, :b => 2} => 'C',
-        {:d => 3, :b => 2} => 'D',
-      }
+      pairs = [
+        [{:a => 1, :b => 1}, 'A'],
+        [{:a => 2, :b => 1}, 'B'],
+        [{:c => 2, :b => 2}, 'C'],
+        [{:d => 3, :b => 2}, 'D'],
+      ]
 
-      DecisionTree.partition(:a, amap).should == {
-        1   => {{:b => 1} => "A"},
-        2   => {{:b => 1} => "B"},
-        nil => {{:c => 2, :b =>2} =>"C", {:d => 3, :b => 2} => 'D'}
+      DecisionTree.partition(:a, pairs).should == { 
+        1   => [[{:b => 1}, "A"]],
+        2   => [[{:b => 1}, "B"]],
+        nil => [[{:c => 2, :b =>2}, 'C'], [{:d => 3, :b => 2}, 'D']]
       }
       
     end
@@ -85,12 +85,12 @@ describe DecisionTree do
     end
 
     it 'should return a key when all are equally informative' do
-      amap = {
-        {:a => 1, :b => 2} => 'Y',
-        {:a => 2, :b => 3} => 'M'
-      }
+      pairs = [
+        [{:a => 1, :b => 2}, 'Y'],
+        [{:a => 2, :b => 3}, 'M'],
+      ]
 
-      mik = DecisionTree.most_informative_key(amap)
+      mik = DecisionTree.most_informative_key(pairs)
       mik.should_not be_nil
       mik.class.should == Symbol
     end
@@ -99,22 +99,22 @@ describe DecisionTree do
   describe 'with the example from the Mitchell book' do
 
     before(:each) do
-      @sample_data = {
-        {:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Weak'}   => 'No',
-        {:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'} => 'No',
-        {:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'} => 'Yes',
-        {:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'}   => 'Yes',
-        {:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'}   => 'Yes',
-        {:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'} => 'No',
-        {:outlook => 'Overcast', :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'} => 'Yes',
-        {:outlook => 'Sunny',    :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'}   => 'No',
-        {:outlook => 'Sunny',    :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'}   => 'Yes',
-        {:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'Normal', :wind => 'Weak'}   => 'Yes',
-        {:outlook => 'Sunny',    :temperature => 'Mild', :humidity => 'Normal', :wind => 'Strong'} => 'Yes',
-        {:outlook => 'Overcast', :temperature => 'Mild', :humidity => 'High',   :wind => 'Strong'} => 'Yes',
-        {:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'Normal', :wind => 'Weak'}   => 'Yes',
-        {:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Strong'} => 'No',
-      }
+      @sample_data = [ 
+        [{:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Weak'},   'No'],
+        [{:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'}, 'No'],
+        [{:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'}, 'Yes'],
+        [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'},   'Yes'],
+        [{:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+        [{:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'}, 'No'],
+        [{:outlook => 'Overcast', :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'}, 'Yes'],
+        [{:outlook => 'Sunny',    :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'},   'No'],
+        [{:outlook => 'Sunny',    :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+        [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+        [{:outlook => 'Sunny',    :temperature => 'Mild', :humidity => 'Normal', :wind => 'Strong'}, 'Yes'],
+        [{:outlook => 'Overcast', :temperature => 'Mild', :humidity => 'High',   :wind => 'Strong'}, 'Yes'],
+        [{:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+        [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Strong'}, 'No'],
+      ]
 
     end
 

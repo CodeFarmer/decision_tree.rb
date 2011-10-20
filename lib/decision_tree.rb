@@ -1,7 +1,10 @@
 module DecisionTree
 
+
   # pairs: list of [input, output]
   # return: the entropy with regard to (output) of the current list
+  #
+  # TODO: allow a map, as well as a list
   def self.entropy(pairs)
     output_counts = {}
     pairs.each do |pair|
@@ -21,12 +24,15 @@ module DecisionTree
 
   end
 
-  # amap: map of (input, output) where input is also a map
+
+  # pairs: list of pairs  (input, output) where input is a map
   # key:  a particular key from the input maps to use to partition the map
   #
-  # return a map, whose keys are the various values that 'key' takes in the maps that make up the first elements of each pair, and whose values are the segments of pairs where input is equal that value (but with 'key' removed). This can include the nil key.
+  # return a map, whose keys are the various values that 'key' takes in the maps that make up the first elements of each pair, and whose values are the segments of 'pairs' where input is equal that value (but with 'key' removed). This can include the nil key.
   #
-  # Hmm. Makes sense when you say it out lout.
+  # Hmm. Makes sense when you say it out loud.
+  #
+  # TODO: Allow a map as well as a list (? or should we; just let entropy and most_informative be the interface?)
   def self.partition(key, pairs)
 
     ret = {}
@@ -49,6 +55,7 @@ module DecisionTree
     return ret
 
   end
+
 
   # alist: a list of maps
   # return an Enumerable containing all of the keys that occur in the various maps
@@ -73,6 +80,7 @@ module DecisionTree
     end
 
     return winner
+
 
   end
 

@@ -136,6 +136,7 @@ describe DecisionTree do
       it 'should return 0.029 for :temperature' do
         DecisionTree.gain(:temperature, @sample_data).should be_within(0.0005).of 0.029
       end
+
      end
 
     describe '.most_informative_key' do
@@ -143,6 +144,7 @@ describe DecisionTree do
         DecisionTree.most_informative_key(@sample_data).should == :outlook
       end
     end
+
   end
 
 end

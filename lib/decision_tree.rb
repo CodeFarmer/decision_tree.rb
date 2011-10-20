@@ -6,6 +6,7 @@ module DecisionTree
   #
   # TODO: allow a map, as well as a list
   def self.entropy(pairs)
+
     output_counts = {}
     pairs.each do |pair|
       output_counts[pair[1]] ||= 0

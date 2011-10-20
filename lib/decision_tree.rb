@@ -56,8 +56,6 @@ module DecisionTree
     alist.reduce(Set.new) {|a, m| a.merge(m.keys)}.to_a
   end
 
-  # amap: as with .partition, a map of (input, output) whose inputs are also maps
-  # return: the key which, when used to partition amap, produces the creates net information gain (across all the partitions) compared to amap
   def self.most_informative_key(pairs)
 
     winner = nil
@@ -80,7 +78,7 @@ module DecisionTree
 
   def self.gain(key, pairs, current_entropy=nil)
     current_entropy = entropy(pairs) if current_entropy.nil?
-    return current_entropy - partition(key, pairs).values.reduce(0) {|a, v| a + entropy(v)}
+    return current_entropy - partition(key, pairs).values.reduce(0) {|a, v| a + ((v.count.to_f / pairs.count) * entropy(v))}
   end
 
 end

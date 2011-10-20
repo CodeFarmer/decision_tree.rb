@@ -119,12 +119,15 @@ describe DecisionTree do
     end
 
     describe '.gain' do
-      it 'should return 0.246 for :outlook' do
-        DecisionTree.gain(:outlook, @sample_data).should be_within(0.0005).of 0.246
+
+      # NOTE that the gain calculations in the textbook are floored, not rounded!
+      it 'should return 0.247 for :outlook' do
+        debugger
+        DecisionTree.gain(:outlook, @sample_data).should be_within(0.0005).of 0.247
       end
 
-      it 'should return 0.151 for :humidity' do
-        DecisionTree.gain(:humidity, @sample_data).should be_within(0.0005).of 0.151
+      it 'should return 0.152 for :humidity' do
+        DecisionTree.gain(:humidity, @sample_data).should be_within(0.0005).of 0.152
       end
 
       it 'should return 0.048 for :wind' do
@@ -132,7 +135,7 @@ describe DecisionTree do
       end
 
       it 'should return 0.029 for :temperature' do
-        DecisionTree.gain(:wind, @sample_data).should be_within(0.0005).of 0.048
+        DecisionTree.gain(:temperature, @sample_data).should be_within(0.0005).of 0.029
       end
      end
 

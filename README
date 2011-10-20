@@ -1,2 +1,2 @@
-Basically an implementation of chapter 3 of Tom M. Mitchell, "Machine Learning", applied to inputs which are maps of maps.
+Basically an implementation of chapter 3 of Tom M. Mitchell, "Machine Learning", applied to inputs which are pairs of [map, <whatever>], and creating trees whose questions are about the keys of the maps.
 

@@ -1,2 +1,45 @@
 Basically an implementation of chapter 3 of Tom M. Mitchell, "Machine Learning", applied to inputs which are pairs of [map, <whatever>], and creating trees whose questions are about the keys of the maps.
 
+Usage:
+
+ruby-1.9.2-p180 > sample_data = [ 
+    [{:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Weak'},   'No'],
+    [{:outlook => 'Sunny',    :temperature => 'Hot',  :humidity => 'High',   :wind => 'Strong'}, 'No'],
+    [{:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'High',   :wind => 'Weak'},   'Yes'],
+    [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'},   'Yes'],
+    [{:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+    [{:outlook => 'Rain',     :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'}, 'No'],
+    [{:outlook => 'Overcast', :temperature => 'Cool', :humidity => 'Normal', :wind => 'Strong'}, 'Yes'],
+    [{:outlook => 'Sunny',    :temperature => 'Mild', :humidity => 'High',   :wind => 'Weak'},   'No'],
+    [{:outlook => 'Sunny',    :temperature => 'Cool', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+    [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+    [{:outlook => 'Sunny',    :temperature => 'Mild', :humidity => 'Normal', :wind => 'Strong'}, 'Yes'],
+    [{:outlook => 'Overcast', :temperature => 'Mild', :humidity => 'High',   :wind => 'Strong'}, 'Yes'],
+    [{:outlook => 'Overcast', :temperature => 'Hot',  :humidity => 'Normal', :wind => 'Weak'},   'Yes'],
+    [{:outlook => 'Rain',     :temperature => 'Mild', :humidity => 'High',   :wind => 'Strong'}, 'No'],
+  ]
+
+ruby-1.9.2-p180 > tree = DecisionTree.build(sample_data)
+
+  => [:outlook, {"Sunny"=>[:humidity, {"High"=>["No"], "Normal"=>["Yes"]}], "Overcast"=>["Yes"], "Rain"=>[:wind, {"Weak"=>["Yes"], "Strong"=>["No"]}]}]
+
+ruby-1.9.2-p180 > puts DecisionTree.tree_string(tree)
+
+outlook?
+  ["Sunny"]:
+    humidity?
+      ["High"]:
+        => No
+      ["Normal"]:
+        => Yes
+  ["Overcast"]:
+    => Yes
+  ["Rain"]:
+    wind?
+      ["Weak"]:
+        => Yes
+      ["Strong"]:
+        => No
+
+ => nil 
+

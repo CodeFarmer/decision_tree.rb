@@ -1,5 +1,6 @@
-module DecisionTree
+require 'set'
 
+module DecisionTree
 
   # pairs: list of [input, output]
   # return: the entropy with regard to (output) of the current list

@@ -103,5 +103,38 @@ module DecisionTree
     return [mik, choice_map]
   end
 
+  INDENT = '  '
+  def self.tree_string(tree, indent = '')
+
+    ret = '' + indent
+    if tree.count == 1 then # leaf
+      ret << "=> #{tree[0]}\n"
+    else
+
+      ret << "#{tree[0]}?\n"
+
+      consolidate_keys(tree[1]).each do |k, v|
+        ret << indent + INDENT
+        ret << "#{k}:\n"
+        ret << tree_string(v, indent + INDENT + INDENT)
+      end
+
+    end
+
+    return ret
+    
+  end
+
+  # return a map where no value is repeated, and keys that share values are now an array of keys
+  # ie., {:a => 1, :b => 1, :c => 2} => {[:a, :b] => 1, :c => 2}
+  def self.consolidate_keys(map)
+    ret = {}
+    map.values.uniq.each do |v|
+      ret[map.keys.select{|k| map[k] == v}] = v
+    end
+
+    ret
+  end
+
 end
 

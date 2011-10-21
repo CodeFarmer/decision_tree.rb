@@ -138,7 +138,15 @@ describe DecisionTree do
 
   end
 
-  describe 'with the example from the Mitchell book' do
+  describe '.consolidate_keys' do
+
+    it 'should at least follow the comment in front of the method' do
+      DecisionTree.consolidate_keys({:a => 1, :b => 1, :c => 2}).should == {[:a, :b] => 1, :c => 2}
+    end
+
+  end
+
+  context 'with the example from the Mitchell book' do
 
     before(:each) do
       @sample_data = [ 

@@ -90,5 +90,18 @@ module DecisionTree
     return current_entropy - partition(key, pairs).values.reduce(0) {|a, v| a + ((v.count.to_f / pairs.count) * entropy(v))}
   end
 
+  def self.build(pairs)
+    # NOTE this ends up calculating entropy and partitions way more times than it should, there is a better way to structure these functions even without state (the Clojure version will be lovely).
+    return [pairs.first[1]] if entropy(pairs) == 0
+
+    mik = most_informative_key(pairs)
+    choice_map = {}
+    partition(mik, pairs).each do |v, part|
+      choice_map[v] = build(part)
+    end
+
+    return [mik, choice_map]
+  end
+
 end
 
